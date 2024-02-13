@@ -50,22 +50,24 @@ class HermesConnector(LoadConnector, PollConnector):
         doc_batch: list[Document] = []
 
         for thread in message_threads:
-            updated_at = thread.get("last_updated")
-            if start is not None and updated_at < start:
+            updated_at = datetime.fromisoformat(
+                thread.get("last_updated")
+            )
+            if start is not None and updated_at is not None and updated_at < start:
                 continue
-            if end is not None and updated_at > end:
+            if end is not None and updated_at is not None and updated_at > end:
                 continue
                 
             messages = thread.get("messages")
 
-            link = f"{HERMES_URL}threads/{thread.get('thread_id')}"
+            link = f"{HERMES_URL}threads/{thread.get('_id')}"
 
             message_texts = []
 
             for message in messages:
                 context = f"From: {message.get('sender_username')}\n \
                             Filename: {message.get('filename')}\n \
-                            Code: {message.get('code')}\n \
+                            Code: {message.get('snippet')}\n \
                             Message: {message.get('message')}"
                 message_texts.append(context)
 
@@ -74,11 +76,13 @@ class HermesConnector(LoadConnector, PollConnector):
 
             doc_batch.append(
                 Document(
-                    id=thread.get("thread_id"),
+                    id=thread.get("_id"),
                     sections=[Section(link=link, text=context_text)],
                     source=DocumentSource.HERMES, 
-                    semantic_identifier=thread.get("thread_id"),
-                    doc_updated_at=updated_at,
+                    semantic_identifier=thread.get("_id"),
+                    doc_updated_at=datetime.fromisoformat(
+                        str(updated_at)
+                    ).astimezone(timezone.utc),
                     metadata={}
                 )
             )
