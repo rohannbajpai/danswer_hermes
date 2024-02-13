@@ -47,6 +47,7 @@ import requestTrackerIcon from "../../../public/RequestTracker.png";
 import zulipIcon from "../../../public/Zulip.png";
 import linearIcon from "../../../public/Linear.png";
 import hubSpotIcon from "../../../public/HubSpot.png";
+import hermesIcon from "../../../public/Hermes.ico";
 import document360Icon from "../../../public/Document360.png";
 import googleSitesIcon from "../../../public/GoogleSites.png";
 import zendeskIcon from "../../../public/Zendesk.svg";
@@ -417,6 +418,21 @@ export const JiraIcon = ({
       className={`w-[${size + 4}px] h-[${size + 4}px] -m-0.5 ` + className}
     >
       <Image src={jiraSVG} alt="Logo" width="96" height="96" />
+    </div>
+  );
+};
+
+export const HermesIcon = ({
+  size = 16,
+  className = defaultTailwindCSS,
+}: IconProps) => {
+  // Jira Icon has a bit more surrounding whitespace than other icons, which is why we need to adjust it here
+  return (
+    <div
+      style={{ width: `${size + 4}px`, height: `${size + 4}px` }}
+      className={`w-[${size + 4}px] h-[${size + 4}px] -m-0.5 ` + className}
+    >
+      <Image src={hermesIcon} alt="Logo" width="96" height="96" />
     </div>
   );
 };

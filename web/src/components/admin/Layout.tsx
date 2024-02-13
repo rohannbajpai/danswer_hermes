@@ -11,6 +11,7 @@ import {
   RobotIcon,
   ConnectorIcon,
   SlackIcon,
+  HermesIcon,
 } from "@/components/icons/icons";
 import { User } from "@/lib/types";
 import {

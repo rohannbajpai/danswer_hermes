@@ -12,6 +12,7 @@ import {
   GoogleSitesIcon,
   GuruIcon,
   HubSpotIcon,
+  HermesIcon,
   JiraIcon,
   LinearIcon,
   LoopioIcon,
@@ -127,6 +128,11 @@ const SOURCE_METADATA_MAP: SourceMap = {
   hubspot: {
     icon: HubSpotIcon,
     displayName: "HubSpot",
+    category: SourceCategory.AppConnection,
+  },
+  hermes: {
+    icon: HermesIcon,
+    displayName: "Hermes",
     category: SourceCategory.AppConnection,
   },
   document360: {

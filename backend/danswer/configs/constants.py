@@ -83,6 +83,7 @@ class DocumentSource(str, Enum):
     ZENDESK = "zendesk"
     LOOPIO = "loopio"
     SHAREPOINT = "sharepoint"
+    HERMES = "hermes"
 
 
 class DocumentIndexType(str, Enum):

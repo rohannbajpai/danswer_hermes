@@ -27,6 +27,7 @@ export type ValidSources =
   | "zulip"
   | "linear"
   | "hubspot"
+  | "hermes"
   | "document360"
   | "requesttracker"
   | "file"
@@ -146,6 +147,8 @@ export interface NotionConfig {
 }
 
 export interface HubSpotConfig {}
+
+export interface HermesConfig {}
 
 export interface RequestTrackerConfig {}
 
@@ -289,6 +292,10 @@ export interface LinearCredentialJson {
 
 export interface HubSpotCredentialJson {
   hubspot_access_token: string;
+}
+
+export interface HermesCredentialJson {
+  hermes_access_token: string;
 }
 
 export interface RequestTrackerCredentialJson {
