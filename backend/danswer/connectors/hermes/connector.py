@@ -50,7 +50,7 @@ class HermesConnector(LoadConnector, PollConnector):
         doc_batch: list[Document] = []
 
         for thread in message_threads:
-            updated_at = thread.get("timestamp")
+            updated_at = thread.get("last_updated")
             if start is not None and updated_at < start:
                 continue
             if end is not None and updated_at > end:

@@ -5,8 +5,6 @@ HERMES_URL = "https://hermesapp.net/api/"
 
 class Hermes:
     """ Handles interactions with Hermes API """
-
-
     def __init__(
         self, access_token: str | None = None
     ) -> None:
@@ -19,6 +17,6 @@ class Hermes:
         body = {
             "datetime": str(datetime.datetime.now(datetime.timezone.utc))
         }
-        response = requests.post(url = f"{HERMES_URL}get_threads", headers=headers, data=body)
+        response = requests.post(url = f"{HERMES_URL}get_threads", headers=headers, json=body)
         
         return response.json()
