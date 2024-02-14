@@ -212,8 +212,8 @@ services:
     environment:
       - DOMAIN=localhost
     ports:
-      - "80:80"
-      - "3001:80"  # allow for localhost:3000 usage, since that is the norm
+      - "90:90"
+      - "3001:90"  # allow for localhost:3000 usage, since that is the norm
     volumes:
       - ../data/nginx:/etc/nginx/conf.d
     logging:
