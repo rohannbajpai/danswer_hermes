@@ -4,4 +4,6 @@ docker compose -f docker-compose.dev.yml -p danswer-stack pull
 docker compose -f docker-compose.dev.yml -p danswer-stack up -d --force-recreate
 
 # local build:
-docker compose -f docker-compose.dev.yml -p danswer-stack up -d --build --force-recreate
+sudo docker compose -f docker-compose.dev.yml -p danswer-stack up -d --build --force-recreate
+
+sudo docker compose -f docker-compose.prod.yml -p danswer-stack up -d --build --force-recreate

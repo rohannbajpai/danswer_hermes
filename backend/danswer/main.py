@@ -154,6 +154,7 @@ def get_application() -> FastAPI:
             tags=["auth"],
         )
         include_router_with_global_prefix_prepended(
+            application,
             fastapi_users.get_auth_router(jwt_authentication),
             prefix="/auth/jwt",
             tags=["auth"]

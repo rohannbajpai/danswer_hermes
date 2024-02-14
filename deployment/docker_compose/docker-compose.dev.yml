@@ -8,13 +8,13 @@ services:
     command: >
       /bin/sh -c "alembic upgrade head &&
       echo \"Starting Danswer Api Server\" &&
-      uvicorn danswer.main:app --host 0.0.0.0 --port 8080"
+      uvicorn danswer.main:app --host 0.0.0.0 --port 8090"
     depends_on:
       - relational_db
       - index
     restart: always
     ports:
-      - "8080:8080"
+      - "8090:8090"
     environment:
       # Auth Settings
       - AUTH_TYPE=${AUTH_TYPE:-disabled}
@@ -213,7 +213,7 @@ services:
       - DOMAIN=localhost
     ports:
       - "80:80"
-      - "3000:80"  # allow for localhost:3000 usage, since that is the norm
+      - "3001:80"  # allow for localhost:3000 usage, since that is the norm
     volumes:
       - ../data/nginx:/etc/nginx/conf.d
     logging:
