@@ -19,6 +19,7 @@ from danswer.auth.schemas import UserRead
 from danswer.auth.schemas import UserUpdate
 from danswer.auth.users import auth_backend
 from danswer.auth.users import fastapi_users
+from danswer.auth.jwt_auth import jwt_authentication
 from danswer.chat.load_yamls import load_chat_yamls
 from danswer.configs.app_configs import APP_API_PREFIX
 from danswer.configs.app_configs import APP_HOST
@@ -151,6 +152,11 @@ def get_application() -> FastAPI:
             fastapi_users.get_auth_router(auth_backend),
             prefix="/auth",
             tags=["auth"],
+        )
+        include_router_with_global_prefix_prepended(
+            fastapi_users.get_auth_router(jwt_authentication),
+            prefix="/auth/jwt",
+            tags=["auth"]
         )
         include_router_with_global_prefix_prepended(
             application,
