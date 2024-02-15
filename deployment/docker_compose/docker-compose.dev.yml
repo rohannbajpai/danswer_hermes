@@ -8,13 +8,13 @@ services:
     command: >
       /bin/sh -c "alembic upgrade head &&
       echo \"Starting Danswer Api Server\" &&
-      uvicorn danswer.main:app --host 0.0.0.0 --port 8090"
+      uvicorn danswer.main:app --host 0.0.0.0 --port 8080"
     depends_on:
       - relational_db
       - index
     restart: always
     ports:
-      - "8090:8090"
+      - "8080:8080"
     environment:
       # Auth Settings
       - AUTH_TYPE=${AUTH_TYPE:-disabled}
@@ -239,7 +239,7 @@ services:
       dockerfile: Dockerfile.model_server
     profiles:
       - "model-server"
-    command: uvicorn model_server.main:app --host 0.0.0.0 --port 9000
+    command: uvicorn model_server.main:app --host 0.0.0.0 --port 8000
     restart: always
     environment:
       - DOCUMENT_ENCODER_MODEL=${DOCUMENT_ENCODER_MODEL:-}
