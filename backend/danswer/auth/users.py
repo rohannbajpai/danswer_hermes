@@ -3,9 +3,13 @@ import smtplib
 import uuid
 from collections.abc import AsyncGenerator
 from email.mime.multipart import MIMEMultipart
+
 from email.mime.text import MIMEText
 from typing import Optional
 from typing import Tuple
+from typing import Annotated
+
+import jwt
 
 from fastapi import APIRouter
 from fastapi import Depends
@@ -21,11 +25,11 @@ from fastapi_users import UUIDIDMixin
 from fastapi_users.authentication import AuthenticationBackend
 from fastapi_users.authentication import CookieTransport
 from fastapi_users.authentication import Strategy
-from fastapi_users.authentication import get_jwt_strategy
 from fastapi_users.authentication.strategy.db import AccessTokenDatabase
 from fastapi_users.authentication.strategy.db import DatabaseStrategy
 from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users.openapi import OpenAPIResponseType
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from danswer.auth.schemas import UserCreate
@@ -279,15 +283,26 @@ fastapi_users = FastAPIUserWithLogoutRouter[User, uuid.UUID](
 # yet verified, so that the frontend knows they exist
 optional_valid_user = fastapi_users.current_user(active=True, optional=True)
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 async def double_check_user(
     request: Request,
-    user: User | None = Depends(get_jwt_strategy()),
-    db_session: Session = Depends(get_session),
+    user: User | None,
+    db_session: Session | None,
+    token: Annotated[str, Depends(oauth2_scheme)],
     optional: bool = DISABLE_AUTH,
 ) -> User | None:
     if optional:
         return None
+    
+    if token:
+        try:
+            jwt.decode(token, str(os.environ.get("JWT_SECRET_KEY")), algorithms=['HS256'])
+        except:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied. Hermes is not authenticated.",
+            )
 
     if user is None:
         raise HTTPException(
