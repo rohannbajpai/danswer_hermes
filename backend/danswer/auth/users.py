@@ -303,6 +303,7 @@ async def double_check_user(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Access denied. Hermes is not authenticated.",
             )
+        return user
 
     if user is None:
         raise HTTPException(
@@ -327,7 +328,7 @@ async def current_user(
     double_check_user = fetch_versioned_implementation(
         "danswer.auth.users", "double_check_user"
     )
-    user = await double_check_user(request, user, db_session)
+    user = await double_check_user(request, user, oauth2_scheme, db_session)
     return user
 
 
