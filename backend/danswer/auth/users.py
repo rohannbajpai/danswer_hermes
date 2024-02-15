@@ -281,8 +281,8 @@ optional_valid_user = fastapi_users.current_user(active=True, optional=True)
 
 async def double_check_user(
     request: Request,
-    user: User | None,
-    db_session: Session,
+    user: User | None = Depends(optional_valid_user),
+    db_session: Session = Depends(get_session),
     optional: bool = DISABLE_AUTH,
 ) -> User | None:
     if optional:
