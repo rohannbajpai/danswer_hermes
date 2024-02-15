@@ -289,7 +289,7 @@ async def double_check_user(
     request: Request,
     user: User | None,
     db_session: Session | None,
-    token: Annotated[str, Depends(oauth2_scheme)],
+    token: Annotated[str, Depends(oauth2_scheme)] | None,
     optional: bool = DISABLE_AUTH,
 ) -> User | None:
     if optional:
@@ -330,7 +330,7 @@ async def current_user(
     double_check_user = fetch_versioned_implementation(
         "danswer.auth.users", "double_check_user"
     )
-    user = await double_check_user(request, user, oauth2_scheme, db_session)
+    user = await double_check_user(request, user, db_session)
     return user
 
 
