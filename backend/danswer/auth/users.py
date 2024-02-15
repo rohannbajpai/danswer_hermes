@@ -289,7 +289,7 @@ async def double_check_user(
     request: Request,
     user: User | None,
     db_session: Session | None,
-    token: Annotated[str, Depends(oauth2_scheme)] | None,
+    token: Annotated[str, Depends(oauth2_scheme)] = None,
     optional: bool = DISABLE_AUTH,
 ) -> User | None:
     if optional:
