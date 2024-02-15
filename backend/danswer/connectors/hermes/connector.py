@@ -83,7 +83,9 @@ class HermesConnector(LoadConnector, PollConnector):
                     doc_updated_at=datetime.fromisoformat(
                         str(updated_at)
                     ).astimezone(timezone.utc),
-                    metadata={}
+                    metadata={
+                        "enterprise_id": thread.get("enterprise_id")
+                    }
                 )
             )
 
@@ -117,8 +119,9 @@ if __name__ == "__main__":
     
     connector = HermesConnector()
     connector.load_credentials(
-        {"hermes_access_token": os.environ["HERMES_ACCESS_TOKEN"]}
+        {"hermes_access_token": str(os.environ["HERMES_ACCESS_TOKEN"])}
     )
+    logger.info("hermes access token is ", str(os.environ["HERMES_ACCESS_TOKEN"]))
 
     document_batches = connector.load_from_state()
     print(next(document_batches))
