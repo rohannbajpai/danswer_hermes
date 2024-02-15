@@ -21,6 +21,7 @@ from fastapi_users import UUIDIDMixin
 from fastapi_users.authentication import AuthenticationBackend
 from fastapi_users.authentication import CookieTransport
 from fastapi_users.authentication import Strategy
+from fastapi_user.authentication import get_jwt_strategy
 from fastapi_users.authentication.strategy.db import AccessTokenDatabase
 from fastapi_users.authentication.strategy.db import DatabaseStrategy
 from fastapi_users.db import SQLAlchemyUserDatabase
@@ -281,7 +282,7 @@ optional_valid_user = fastapi_users.current_user(active=True, optional=True)
 
 async def double_check_user(
     request: Request,
-    user: User | None = Depends(optional_valid_user),
+    user: User | None = Depends(get_jwt_strategy()),
     db_session: Session = Depends(get_session),
     optional: bool = DISABLE_AUTH,
 ) -> User | None:
