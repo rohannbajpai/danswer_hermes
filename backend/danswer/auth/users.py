@@ -283,7 +283,7 @@ fastapi_users = FastAPIUserWithLogoutRouter[User, uuid.UUID](
 # yet verified, so that the frontend knows they exist
 optional_valid_user = fastapi_users.current_user(active=True, optional=True)
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/jwt/login")
 
 async def double_check_user(
     request: Request,
@@ -296,8 +296,10 @@ async def double_check_user(
         return None
     
     if token:
+        logger.info("token found:", token)
         try:
             jwt.decode(token, str(os.environ.get("JWT_SECRET_KEY")), algorithms=['HS256'])
+            logger.info("token invalid:", token)
         except:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
