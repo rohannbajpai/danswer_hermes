@@ -2,7 +2,6 @@ from datetime import datetime
 from datetime import timezone
 from typing import Any
 
-import requests
 from .hermes import Hermes  # type: ignore
 
 from danswer.configs.app_configs import INDEX_BATCH_SIZE
@@ -24,7 +23,7 @@ class HermesConnector(LoadConnector, PollConnector):
     def __init__(
         self, batch_size: int = INDEX_BATCH_SIZE, access_token: str | None = None
     ) -> None:
-        self.batch_size = batch_size
+        self.batch_size = batch_size//2
         self.access_token = access_token
         self.portal_id: str | None = None
         self.base_url = HERMES_URL
@@ -44,8 +43,8 @@ class HermesConnector(LoadConnector, PollConnector):
         if self.access_token is None:
             raise ConnectorMissingCredentialError("Hermes")
         
-        api_client = Hermes(access_token=self.access_token) #TODO: implement hermes
-        message_threads = api_client.get_all_message_threads() #TODO: fetch all threads
+        api_client = Hermes(access_token=self.access_token)
+        message_threads = api_client.get_all_message_threads()
 
         doc_batch: list[Document] = []
 
@@ -97,15 +96,69 @@ class HermesConnector(LoadConnector, PollConnector):
             yield doc_batch
 
 
-    def _process_spaces():
+    def _process_spaces(self) -> GenerateDocumentsOutput:
         """
-        Retrieves Spaces and Makes them Searchable        
+        Retrieves Spaces and Makes them Searchable
         """
-        # TODO
-        pass
+        if self.access_token is None:
+            raise ConnectorMissingCredentialError("Hermes")
+
+        api_client = Hermes(access_token=self.access_token)
+        all_spaces = api_client.get_all_spaces()
+
+        space_batch: list[Document] = []
+
+        for space in all_spaces:
+            updated_at = space.get("last_updated")
+            if updated_at:
+                updated_at = datetime.fromisoformat(updated_at)
+
+            space_id = space.get("_id")
+            space_name = space.get("name")
+            created_by = space.get("created_by")
+            threads = space.get("threads", [])
+            searches = space.get("searches", [])
+
+            link = f"{HERMES_URL}spaces/{space_id}"
+
+            threads_text = '\n'.join([f"- Thread: {thread}" for thread in threads])
+            searches_text = '\n'.join([f"- Search Query: {search}" for search in searches])
+
+            context_text = (
+                f"Space Name: {space_name}\n"
+                f"Created By: {created_by}\n"
+                f"Last Updated: {updated_at}\n"
+                f"Threads:\n{threads_text}\n"
+                f"Searches:\n{searches_text}\n"
+            )
+
+            space_batch.append(
+                Document(
+                    id=space_id,
+                    sections=[Section(link=link, text=context_text)],
+                    source=DocumentSource.HERMES, 
+                    semantic_identifier=space_id,
+                    doc_updated_at=updated_at.astimezone(timezone.utc),
+                    metadata={
+                        "space_name": space_name,
+                        "created_by": created_by,
+                        "threads": threads,
+                        "searches": searches,
+                        "enterprise_id": space.get("enterprise_id")
+                    }
+                )
+            )
+
+            if len(space_batch) >= self.batch_size:
+                yield space_batch
+                space_batch = []
+
+        if space_batch:
+            yield space_batch
+
 
     def load_from_state(self) -> GenerateDocumentsOutput:
-        return self._process_messages()
+        return self._process_messages() + self._process_spaces()
     
     def poll_source(
             self, start: SecondsSinceUnixEpoch, end: SecondsSinceUnixEpoch

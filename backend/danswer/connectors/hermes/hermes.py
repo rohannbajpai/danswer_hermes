@@ -20,3 +20,14 @@ class Hermes:
         response = requests.post(url = f"{HERMES_URL}get_threads", headers=headers, json=body)
         
         return response.json()
+    
+    def get_all_spaces(self):
+        headers = {
+            "Authorization": f"Bearer {self.access_token}"
+        }
+        body = {
+            "datetime": str(datetime.datetime.now(datetime.timezone.utc))
+        }
+        response = requests.post(url = f"{HERMES_URL}get_spaces", headers=headers, json=body)
+        
+        return response.json()
