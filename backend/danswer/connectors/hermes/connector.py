@@ -83,7 +83,8 @@ class HermesConnector(LoadConnector, PollConnector):
                         str(updated_at)
                     ).astimezone(timezone.utc),
                     metadata={
-                        "enterprise_id": thread.get("enterprise_id")
+                        "enterprise_id": thread.get("enterprise_id"),
+                        "type":"message"
                     }
                 )
             )
@@ -144,7 +145,8 @@ class HermesConnector(LoadConnector, PollConnector):
                         "created_by": created_by,
                         "threads": threads,
                         "searches": searches,
-                        "enterprise_id": space.get("enterprise_id")
+                        "enterprise_id": space.get("enterprise_id"),
+                        "type":"space"
                     }
                 )
             )
