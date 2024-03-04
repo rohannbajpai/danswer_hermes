@@ -96,8 +96,9 @@ class HermesConnector(LoadConnector, PollConnector):
         if doc_batch:
             yield doc_batch
 
-
-    def _process_spaces(self) -> GenerateDocumentsOutput:
+    def _process_spaces(
+        self, start: datetime | None = None, end: datetime | None = None
+    ) -> GenerateDocumentsOutput:
         """
         Retrieves Spaces and Makes them Searchable
         """
