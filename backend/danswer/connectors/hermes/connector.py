@@ -144,11 +144,9 @@ class HermesConnector(LoadConnector, PollConnector):
                     semantic_identifier=space_id,
                     doc_updated_at=updated_at.astimezone(timezone.utc),
                     metadata={
-                        "space_name": space_name,
-                        "created_by": created_by,
-                        "threads": threads,
-                        "searches": searches,
-                        "enterprise_id": space.get("enterprise_id"),
+                        "space_name": str(space_name),
+                        "created_by": str(created_by),
+                        "enterprise_id": str(space.get("enterprise_id")),
                         "type":"space"
                     }
                 )
