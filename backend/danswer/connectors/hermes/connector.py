@@ -1,3 +1,4 @@
+from itertools import chain
 from datetime import datetime
 from datetime import timezone
 from typing import Any
@@ -14,6 +15,7 @@ from danswer.connectors.models import ConnectorMissingCredentialError
 from danswer.connectors.models import Document
 from danswer.connectors.models import Section
 from danswer.utils.logger import setup_logger
+
 
 HERMES_URL = "https://hermesapp.net/api/"
 
@@ -161,14 +163,19 @@ class HermesConnector(LoadConnector, PollConnector):
 
 
     def load_from_state(self) -> GenerateDocumentsOutput:
-        return self._process_messages() + self._process_spaces()
+        return chain(self._process_messages(), 
+                     self._process_spaces()
+        )
     
     def poll_source(
             self, start: SecondsSinceUnixEpoch, end: SecondsSinceUnixEpoch
     ) -> GenerateDocumentsOutput:
         start_datetime = datetime.utcfromtimestamp(start)
         end_datetime = datetime.utcfromtimestamp(end)
-        return self._process_messages(start_datetime, end_datetime) + self._process_spaces(start_datetime, end_datetime)
+        return chain(
+            self._process_messages(start_datetime, end_datetime),
+            self._process_spaces(start_datetime, end_datetime)
+        )
     
 if __name__ == "__main__":
     import os
