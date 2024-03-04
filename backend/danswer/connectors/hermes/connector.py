@@ -167,7 +167,7 @@ class HermesConnector(LoadConnector, PollConnector):
     ) -> GenerateDocumentsOutput:
         start_datetime = datetime.utcfromtimestamp(start)
         end_datetime = datetime.utcfromtimestamp(end)
-        return self._process_messages(start_datetime, end_datetime)
+        return self._process_messages(start_datetime, end_datetime) + self._process_spaces(start_datetime, end_datetime)
     
 if __name__ == "__main__":
     import os
