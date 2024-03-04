@@ -166,8 +166,9 @@ class HermesConnector(LoadConnector, PollConnector):
 
 
     def load_from_state(self) -> GenerateDocumentsOutput:
-        return chain(self._process_messages(), 
-                     self._process_spaces()
+        return chain(
+            self._process_spaces(),
+            self._process_messages()
         )
     
     def poll_source(
@@ -176,8 +177,8 @@ class HermesConnector(LoadConnector, PollConnector):
         start_datetime = datetime.utcfromtimestamp(start)
         end_datetime = datetime.utcfromtimestamp(end)
         return chain(
-            self._process_messages(start_datetime, end_datetime),
-            self._process_spaces(start_datetime, end_datetime)
+            self._process_spaces(start_datetime, end_datetime),
+            self._process_messages(start_datetime, end_datetime)
         )
     
 if __name__ == "__main__":
