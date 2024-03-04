@@ -95,8 +95,8 @@ class HermesConnector(LoadConnector, PollConnector):
                 yield doc_batch
                 doc_batch = []
         
-        if doc_batch:
-            yield doc_batch
+        
+        yield doc_batch
 
     def _process_spaces(
         self, start: datetime | None = None, end: datetime | None = None
@@ -161,8 +161,7 @@ class HermesConnector(LoadConnector, PollConnector):
                 yield space_batch
                 space_batch = []
 
-        if space_batch:
-            yield space_batch
+        yield space_batch
 
 
     def load_from_state(self) -> GenerateDocumentsOutput:
