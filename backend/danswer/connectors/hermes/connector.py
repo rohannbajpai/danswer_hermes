@@ -106,7 +106,7 @@ class HermesConnector(LoadConnector, PollConnector):
         """
         if self.access_token is None:
             raise ConnectorMissingCredentialError("Hermes")
-
+        
         api_client = Hermes(access_token=self.access_token)
         all_spaces = api_client.get_all_spaces()
 
@@ -116,6 +116,11 @@ class HermesConnector(LoadConnector, PollConnector):
             updated_at = space.get("last_updated")
             if updated_at:
                 updated_at = datetime.fromisoformat(updated_at)
+                if start is not None and updated_at is not None and updated_at < start:
+                    continue
+                if end is not None and updated_at is not None and updated_at > end:
+                    continue
+
 
             space_id = space.get("_id")
             space_name = space.get("name")

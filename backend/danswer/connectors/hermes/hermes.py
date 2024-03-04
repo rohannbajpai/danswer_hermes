@@ -29,5 +29,5 @@ class Hermes:
             "datetime": str(datetime.datetime.now(datetime.timezone.utc))
         }
         response = requests.post(url = f"{HERMES_URL}get_spaces", headers=headers, json=body)
-        
+        print(response.text)
         return response.json()
